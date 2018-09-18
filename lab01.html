@@ -1,0 +1,60 @@
+<html>
+  <body>
+	<canvas height='320' width='480' id='lab01'></canvas>
+    <script>
+		var canvas = document.getElementById("lab01");
+		var ctx = canvas.getContext("2d");
+
+	 
+		function onClick(event){
+			var x = event.clientX;
+			var y = event.clientY;
+			ctx.fillRect(x,y,50,50);
+			ctx.fillStyle = color;
+	  } 
+	  
+		canvas.addEventListener('click', onClick);
+		ctx.fillStyle = "#000000";
+		ctx.fillRect(1,1,10,10);
+    </script>
+	
+   <script>
+      var canvas0 = document.getElementById("lab01");
+      var ctx0 = canvas.getContext("2d");
+      var xpos = 1;
+	  var ypos = 1;
+	  var color = '#000000'
+	  var index = 1;
+    </script>
+	
+   <script>
+      var timer = setInterval(function(){
+		
+		index += 1;
+		xpos += 10
+		
+		if (index > 6) index = 1;
+		
+		if (xpos >= 480) {
+			xpos = 1;
+			ypos += 10;
+		}
+		
+		if (ypos >= 320) {
+			ypos = 1;
+		}
+		if (index == 6){
+			color = color.substring(0, index) + 'F'
+		}
+		else {
+			color = color.substring(0, index) + 'F' + color.substring(index + 1, );
+		}
+		if (color == '#FFFFFF') color = '#000000'
+		ctx0.fillStyle = color;
+		ctx0.fillRect(xpos, ypos, 10, 10);
+	  }, 10)
+    </script>
+  
+  
+  </body>
+</html>
