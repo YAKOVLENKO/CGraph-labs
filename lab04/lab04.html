@@ -1,0 +1,218 @@
+<html>
+	<body>
+	<canvas height='320' width='480' id='lab03'></canvas>
+	
+	<script>
+	
+	</script>
+	
+	<script>
+		var canvas = document.getElementById("lab03");
+		var ctx = canvas.getContext("2d");
+		
+		var img = new Image();
+		img.src = "image12.png";
+		var rows = 320*480, columns = 4;
+		var pix_array = new Array(rows);
+		var imageData;
+		
+		img.onload = function() 
+		{
+                 
+			ctx.drawImage(img, 0, 0);
+			imageData = ctx.getImageData(0, 0, 480, 320);
+			for (var i = 0; i < rows; i++)
+			{
+				pix_array[i] = new Array(columns);
+				for (var j = 0; j < columns; j++) 
+				{
+					pix_array[i][j] = imageData.data[i * 4 + j];
+				}
+			}
+		};
+
+		function onClick(event)
+		{
+			var counter = 0;
+			for (var i = 0; i < rows; i++)
+			{
+				var new_blue = 0, new_red = 0, new_green = 0, new_alpha = 0;
+				var bool_left = false, bool_right = false;
+				var bool_up = false, bool_down = false;
+				var Gx_blue = 0, Gx_red = 0, Gx_green = 0, Gx_alpha = 0;
+				var Gy_blue = 0, Gy_red = 0, Gy_green = 0, Gy_alpha = 0;
+ 
+				if (i % 480 == 0)
+				{
+					bool_left = true;
+				}
+				if (i % 480 == 479)
+				{
+					bool_right = true;
+				}
+				if (i < 480)
+				{
+					bool_up = true;
+				}
+				if (i >= 480 * 319)
+				{
+					bool_down = true;
+				}
+				
+				/*
+				обрабатываемые позиции:
+				а) слева сверху
+				б) слева
+				в) слева снизу
+				г) снизу
+				д) справа снизу
+				е) справа
+				ж) справа сверху
+				з) сверху
+				*/
+				
+				
+				if (bool_up)
+				{
+					if (bool_left)
+					{
+						Gx_blue = 2 * pix_array[i + 480][2] + pix_array[i + 481][2];
+						Gx_red = 2 * pix_array[i + 480][0] + pix_array[i + 481][0];
+						Gx_green = 2 * pix_array[i + 480][1] + pix_array[i + 481][1];
+						Gx_alpha = 2 * pix_array[i + 480][3] + pix_array[i + 481][3];
+
+						Gy_blue = 2 * pix_array[i + 1][2] + pix_array[i + 481][2];
+						Gy_red = 2 * pix_array[i + 1][0] + pix_array[i + 481][0];
+						Gy_green = 2 * pix_array[i + 1][1] + pix_array[i + 481][1];
+						Gy_alpha = 2 * pix_array[i + 1][3] + pix_array[i + 481][3];
+ 
+					}
+					else if (bool_right)
+					{
+						Gx_blue = 2 * pix_array[i + 480][2] + pix_array[i + 479][2];
+						Gx_red = 2 * pix_array[i + 480][0] + pix_array[i + 479][0];
+						Gx_green = 2 * pix_array[i + 480][1] + pix_array[i + 479][1];
+						Gx_alpha = 2 * pix_array[i + 480][3] + pix_array[i + 479][3];
+
+						Gy_blue = -2 * pix_array[i - 1][2] - pix_array[i + 479][2];
+						Gy_red = -2 * pix_array[i - 1][0] - pix_array[i + 479][0];
+						Gy_green = -2 * pix_array[i - 1][1] - pix_array[i + 479][1];
+						Gy_alpha = -2 * pix_array[i - 1][3] - pix_array[i + 479][3];
+
+					}
+						else {
+							Gx_blue = 2 * pix_array[i + 480][2] + pix_array[i + 479][2] + pix_array[i + 481][2];
+							Gx_red = 2 * pix_array[i + 480][0] + pix_array[i + 479][0] + pix_array[i + 481][0];
+							Gx_green = 2 * pix_array[i + 480][1] + pix_array[i + 479][1] + pix_array[i + 481][1];
+							Gx_alpha = 2 * pix_array[i + 480][3] + pix_array[i + 479][3] + pix_array[i + 481][3];
+
+							Gy_blue = -2 * pix_array[i - 1][2] - pix_array[i + 479][2] + 2*  pix_array[i + 1][2] + pix_array[i + 481][2];
+							Gy_red = -2 * pix_array[i - 1][0] - pix_array[i + 479][0] + 2*  pix_array[i + 1][0] + pix_array[i + 481][0];
+							Gy_green = -2 * pix_array[i - 1][1] - pix_array[i + 479][1] + 2*  pix_array[i + 1][1] + pix_array[i + 481][1];
+							Gy_alpha = -2 * pix_array[i - 1][3] - pix_array[i + 479][3] + 2*  pix_array[i + 1][3] + pix_array[i + 481][3];
+
+						}
+					
+				}
+				else if (bool_down)
+					{
+						if (bool_left)
+						{
+							Gx_blue = -2 * pix_array[i - 480][2] - pix_array[i - 479][2];
+							Gx_red = -2 * pix_array[i - 480][0] - pix_array[i - 479][0];
+							Gx_green = -2 * pix_array[i - 480][1] - pix_array[i - 479][1];
+							Gx_alpha = -2 * pix_array[i - 480][3] - pix_array[i - 479][3];
+
+							Gy_blue = 2 * pix_array[i + 1][2] + pix_array[i - 479][2];
+							Gy_red = 2 * pix_array[i + 1][0] + pix_array[i - 479][0];
+							Gy_green = 2 * pix_array[i + 1][1] + pix_array[i - 479][1];
+							Gy_alpha = 2 * pix_array[i + 1][3] + pix_array[i - 479][3];
+
+						}
+						else if (bool_right)
+						{
+							Gx_blue = -2 * pix_array[i - 480][2] - pix_array[i - 481][2];
+							Gx_red = -2 * pix_array[i - 480][0] - pix_array[i - 481][0];
+							Gx_green = -2 * pix_array[i - 480][1] - pix_array[i - 481][1];
+							Gx_alpha = -2 * pix_array[i - 480][3] - pix_array[i - 481][3];
+
+							Gy_blue = -2 * pix_array[i - 1][2] - pix_array[i - 481][2];
+							Gy_red = -2 * pix_array[i - 1][0] - pix_array[i - 481][0];
+							Gy_green = -2 * pix_array[i - 1][1] - pix_array[i - 481][1];
+							Gy_alpha = -2 * pix_array[i - 1][3] - pix_array[i - 481][3];
+							
+						}
+							else
+							{
+
+								Gx_blue = -2 * pix_array[i - 480][2] - pix_array[i - 479][2] - pix_array[i - 481][2];
+								Gx_red = -2 * pix_array[i - 480][0] - pix_array[i - 479][0] - pix_array[i - 481][0];
+								Gx_green = -2 * pix_array[i - 480][1] - pix_array[i - 479][1] - pix_array[i - 481][1];
+								Gx_alpha = -2 * pix_array[i - 480][3] - pix_array[i - 479][3] - pix_array[i - 481][3];
+
+								Gy_blue = -2 * pix_array[i - 1][2] + pix_array[i - 479][2] + 2 * pix_array[i + 1][2] - pix_array[i - 481][2];
+								Gy_red = -2 * pix_array[i - 1][0] + pix_array[i - 479][0] + 2 * pix_array[i + 1][0] - pix_array[i - 481][0];
+								Gy_green = -2 * pix_array[i - 1][1] + pix_array[i - 479][1] + 2 * pix_array[i + 1][1] - pix_array[i - 481][1];
+								Gy_alpha = -2 * pix_array[i - 1][3] + pix_array[i - 479][3] + 2 * pix_array[i + 1][3] - pix_array[i - 481][3];
+
+							}
+					}
+					else if (bool_left)
+						{
+							Gx_blue = -2 * pix_array[i - 480][2] - pix_array[i - 479][2] + 2 * pix_array[i + 480][2] + pix_array[i + 481][2];
+							Gx_red = -2 * pix_array[i - 480][0] - pix_array[i - 479][0] + 2 * pix_array[i + 480][0] + pix_array[i + 481][0];
+							Gx_green = -2 * pix_array[i - 480][1] - pix_array[i - 479][1] + 2 * pix_array[i + 480][1] + pix_array[i + 481][1];
+							Gx_alpha = -2 * pix_array[i - 480][3] - pix_array[i - 479][3] + 2 * pix_array[i + 480][3] + pix_array[i + 481][3];
+
+							Gy_blue = 2 * pix_array[i + 1][2] + pix_array[i - 479][2] + pix_array[i + 481][2];
+							Gy_red = 2 * pix_array[i + 1][0] + pix_array[i - 479][0] + pix_array[i + 481][0];
+							Gy_green = 2 * pix_array[i + 1][1] + pix_array[i - 479][1] + pix_array[i + 481][1];
+							Gy_alpha = 2 * pix_array[i + 1][3] + pix_array[i - 479][3] + pix_array[i + 481][3];
+						}
+						else if (bool_right)
+							{
+								Gx_blue = pix_array[i + 479][2] - 2 * pix_array[i - 480][2]  +  2 * pix_array[i + 480][2] - pix_array[i - 481][2];
+								Gx_red = pix_array[i + 479][0] - 2 * pix_array[i - 480][0]  +  2 * pix_array[i + 480][0] - pix_array[i - 481][0];
+								Gx_green = pix_array[i + 479][1] - 2 * pix_array[i - 480][1]  +  2 * pix_array[i + 480][1] - pix_array[i - 481][1];
+								Gx_alpha = pix_array[i + 479][3] - 2 * pix_array[i - 480][3]  +  2 * pix_array[i + 480][3] - pix_array[i - 481][3];
+
+								Gy_blue = -2 * pix_array[i - 1][2] - pix_array[i + 479][2] - pix_array[i - 481][2];
+								Gy_red = -2 * pix_array[i - 1][0] - pix_array[i + 479][0] - pix_array[i - 481][0];
+								Gy_green = -2 * pix_array[i - 1][1] - pix_array[i + 479][1] - pix_array[i - 481][1];
+								Gy_alpha = -2 * pix_array[i - 1][3] - pix_array[i + 479][3] - pix_array[i - 481][3];
+
+							}
+							else
+							{
+								Gx_blue = -2 * pix_array[i - 480][2] + pix_array[i + 479][2] +  2 * pix_array[i + 480][2] - pix_array[i - 481][2] + pix_array[i + 481][2] - pix_array[i - 479][2];
+								Gx_red = -2 * pix_array[i - 480][0] + pix_array[i + 479][0] +  2 * pix_array[i + 480][0] - pix_array[i - 481][0] + pix_array[i + 481][0] - pix_array[i - 479][0];
+								Gx_green = -2 * pix_array[i - 480][1] + pix_array[i + 479][1] +  2 * pix_array[i + 480][1] - pix_array[i - 481][1] + pix_array[i + 481][1] - pix_array[i - 479][1];
+								Gx_alpha = -2 * pix_array[i - 480][3] + pix_array[i + 479][3] +  2 * pix_array[i + 480][3] - pix_array[i - 481][3] + pix_array[i + 481][3] - pix_array[i - 479][3];
+
+								Gy_blue = -2 * pix_array[i - 1][2] - pix_array[i + 479][2] - pix_array[i - 481][2] + pix_array[i + 1][2] + pix_array[i + 481][2] + pix_array[i - 479][2];
+								Gy_red = -2 * pix_array[i - 1][0] - pix_array[i + 479][0] - pix_array[i - 481][0] + pix_array[i + 1][0] + pix_array[i + 481][0] + pix_array[i - 479][0];
+								Gy_green = -2 * pix_array[i - 1][1] - pix_array[i + 479][1] - pix_array[i - 481][1] + pix_array[i + 1][1] + pix_array[i + 481][1] + pix_array[i - 479][1];
+								Gy_alpha = -2 * pix_array[i - 1][3] - pix_array[i + 479][3] - pix_array[i - 481][3] + pix_array[i + 1][3] + pix_array[i + 481][3] + pix_array[i - 479][3];
+
+							}
+				new_red = Math.sqrt(Math.pow(Gx_red, 2) + Math.pow(Gy_red, 2));
+				new_blue = Math.sqrt(Math.pow(Gx_blue, 2) + Math.pow(Gy_blue, 2));
+				new_green = Math.sqrt(Math.pow(Gx_green, 2) + Math.pow(Gy_green, 2));
+				new_alpha = Math.sqrt(Math.pow(Gx_alpha, 2) + Math.pow(Gy_alpha, 2));
+				
+				counter = i * 4;				
+				imageData.data[counter] = new_red;
+				imageData.data[counter + 1] = new_green;
+				imageData.data[counter + 2] = new_blue;
+				imageData.data[counter + 3] = new_alpha;
+			}
+			ctx.putImageData(imageData, 0, 0);
+		};
+		
+		canvas.addEventListener('click', onClick);
+			
+    </script>
+	
+	
+	</body>
+</html>
