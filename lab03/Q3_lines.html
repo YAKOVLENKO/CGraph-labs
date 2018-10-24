@@ -40,19 +40,43 @@
 				{
 					x_sign = -1
 				}
-				var coefficient = Math.abs((y_2 - y_1)/(x_2 - x_1));
+				var coefficient;
+				if ((x_1 == x_2) || (y_1 == y_2))
+				{
+					coefficient = 0;
+				}
+				else
+				{
+					coefficient = Math.abs((y_2 - y_1)/(x_2 - x_1));
+				}
 				
 				var x_flag = true;
 				var y_flag = false;
+				
+				if (x_1 == x_2)
+				{
+					x_flag = false;
+					y_flag = true;
+				}
+				
 				if (coefficient > 1)
 				{
 					coefficient = Math.abs((x_2 - x_1)/(y_2 - y_1));
 					x_flag = false;
 					y_flag = true;
-				}				
-				
-				while ((x_1 != x_2) && (y_1!= y_2 ))
+				}		
+				var x_opoint = false;
+				var y_opoint = false;
+				while ((x_opoint == false) || (y_opoint == false))
 				{
+					if (x_1 == x2 && x_opoint == false) 
+					{
+						x_opoint = true;
+					}
+					if (y_1 == y_2 && y_opoint == false)
+					{
+						y_opoint = true;
+					}
 					if (error < 0.5) 
 					{
 						ctx.fillRect(x_1 + x_sign * x_flag , y_1 + y_sign * y_flag, 1, 1);
