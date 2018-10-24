@@ -12,16 +12,18 @@
 			var y2 = Number.NaN;
 			
 			var new_line = true;
-			
+			var rect = canvas.getBoundingClientRect();
+			var offsetX = rect.left;
+			var offsetY = rect.top
+			;
 			function draw_line(x_1, x_2, y_1, y_2)
 			{
 				var error = 0.0;
-				var coefficient = Math.abs((y_2 - y_1)/(x_2 - x_1));
 				
 				var x_sign = 0;
 				var y_sign = 0;
 				
-				if (y_2 >= y1)
+				if (y_2 >= y_1)
 				{
 					y_sign = 1;
 				}
@@ -38,6 +40,7 @@
 				{
 					x_sign = -1
 				}
+				var coefficient = Math.abs((y_2 - y_1)/(x_2 - x_1));
 				
 				var x_flag = true;
 				var y_flag = false;
@@ -48,11 +51,11 @@
 					y_flag = true;
 				}				
 				
-				while ((x_1 - 10 != x_2 - 10) && (y_1 - 10!= y_2 - 10))
+				while ((x_1 != x_2) && (y_1!= y_2 ))
 				{
 					if (error < 0.5) 
 					{
-						ctx.fillRect(x_1 + x_sign * x_flag - 10, y_1 + y_sign * y_flag - 10, 1, 1);
+						ctx.fillRect(x_1 + x_sign * x_flag , y_1 + y_sign * y_flag, 1, 1);
 						ctx.fillStyle = '#000000';
 						x_1 += x_sign * x_flag;
 						y_1 += y_sign * y_flag;
@@ -60,7 +63,7 @@
 					}
 					else 
 					{
-						ctx.fillRect(x_1 + x_sign - 10, y_1 + y_sign - 10, 1, 1);
+						ctx.fillRect(x_1 + x_sign, y_1 + y_sign, 1, 1);
 						ctx.fillStyle = '#FF0000';
 						error -= 1.0;
 						x_1 += x_sign;
@@ -68,23 +71,24 @@
 					}
 					error += coefficient;
 				}
-				
+				return;
 			
 			}
 			
 			function onClick(event)
 			{
+				
 				if (new_line == true) 
 				{
-					x1 = event.clientX;
-					y1 = event.clientY;
+					x1 = event.clientX - offsetX;
+					y1 = event.clientY - offsetY;
 					
 					new_line = false;
 				}
 				else
 					{
-						x2 = event.clientX;
-						y2 = event.clientY;
+						x2 = event.clientX - offsetX;
+						y2 = event.clientY - offsetY;
 						
 						new_line = true;
 					}
@@ -94,6 +98,7 @@
 				}
 					
 			}
+			
 			
 			
 			canvas.addEventListener('click', onClick);
